@@ -1,0 +1,27 @@
+{
+  "name": "full-stack-dev-assignment",
+  "version": "1.0.0",
+  "description": "This is an example API developed by Ziv Hochman for Spotzer Media Group B.V",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm install",
+    "start": "node index.js",
+    "test": "set NODE_ENV=test./tests/order.test.js && mocha tests/*.js --exit"
+  },
+  "keywords": [
+    "swagger"
+  ],
+  "license": "Unlicense",
+  "private": true,
+  "dependencies": {
+    "chai-http": "^4.3.0",
+    "connect": "^3.2.0",
+    "js-yaml": "^3.3.0",
+    "oas3-tools": "^2.2.3"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "mocha": "^10.1.0",
+    "request": "^2.88.2"
+  }
+}

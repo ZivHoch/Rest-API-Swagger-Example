@@ -1,0 +1,311 @@
+openapi: 3.0.3
+info:
+  title: FULL STACK DEV ASSIGNMENT
+  description: This is an example API developed by Ziv Hochman for Spotzer Media Group
+    B.V
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: ziv.h252@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://www.example.com
+tags:
+- name: orders
+  description: Orders from external clients
+paths:
+  /orders:
+    post:
+      summary: This API accept all the orders from the partners
+      description: Check if there are all the fields that one if the partners need.
+      operationId: ordersPOST
+      requestBody:
+        description: Create new orders
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orders_body'
+      responses:
+        "200":
+          description: Successfully added the items
+        "405":
+          description: Invalid input
+      x-swagger-router-controller: Default
+components:
+  schemas:
+    PartnerA:
+      description: Sells the website product only and collects additional fields
+      allOf:
+      - $ref: '#/components/schemas/Order'
+      - required:
+        - ContactEmail
+        - ContactFirstName
+        - ContactLastName
+        - ContactMobile
+        - ContactPhone
+        - ContactTitle
+        - LineItems
+        type: object
+        properties:
+          ContactFirstName:
+            type: string
+            example: sample string 53
+          ContactLastName:
+            type: string
+            example: sample string 54
+          ContactTitle:
+            type: string
+            example: sample string 56
+          ContactPhone:
+            type: string
+            example: sample string 57
+          ContactMobile:
+            type: string
+            example: sample string 58
+          ContactEmail:
+            type: string
+            example: sample string 58
+          LineItems:
+            type: array
+            items:
+              $ref: '#/components/schemas/Website'
+    PartnerB:
+      description: Uses the standard order fields and sells both website and paid
+        search products
+      allOf:
+      - $ref: '#/components/schemas/Order'
+      - required:
+        - LineItems
+        type: object
+        properties:
+          LineItems:
+            type: array
+            items:
+              anyOf:
+              - $ref: '#/components/schemas/Website'
+              - $ref: '#/components/schemas/PaidSearch'
+    PartnerC:
+      description: "Sells both products, and collects additional information"
+      allOf:
+      - $ref: '#/components/schemas/Order'
+      - required:
+        - ExposureID
+        - LineItems
+        - RelatedOrder
+        - UDAC
+        type: object
+        properties:
+          ExposureID:
+            type: string
+            example: sample string 53
+          UDAC:
+            type: string
+            example: sample string 54
+          RelatedOrder:
+            type: string
+            example: sample string 56
+          LineItems:
+            type: array
+            items:
+              anyOf:
+              - $ref: '#/components/schemas/Website'
+              - $ref: '#/components/schemas/PaidSearch'
+    PartnerD:
+      description: Sells the paid search product only.
+      allOf:
+      - $ref: '#/components/schemas/Order'
+      - required:
+        - LineItems
+        type: object
+        properties:
+          LineItems:
+            type: array
+            items:
+              $ref: '#/components/schemas/PaidSearch'
+    Website:
+      required:
+      - WebsiteDetails
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/Product'
+      - required:
+        - ProductType
+        - WebsiteDetails
+        type: object
+        properties:
+          ProductType:
+            type: string
+            example: Website
+            enum:
+            - Website
+          WebsiteDetails:
+            $ref: '#/components/schemas/Website_WebsiteDetails'
+    PaidSearch:
+      required:
+      - AdWordCampaign
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/Product'
+      - required:
+        - AdWordCampaign
+        - ProductType
+        type: object
+        properties:
+          ProductType:
+            type: string
+            example: Paid Search
+            enum:
+            - Paid Search
+          AdWordCampaign:
+            $ref: '#/components/schemas/PaidSearch_AdWordCampaign'
+    Product:
+      required:
+      - Category
+      - ID
+      - Notes
+      - ProductID
+      - ProductType
+      type: object
+      properties:
+        ID:
+          type: integer
+          format: int64
+          example: 1
+        ProductID:
+          type: string
+          example: 12 7
+        Notes:
+          type: string
+          example: sample string 53
+        Category:
+          type: string
+          example: sample string 245
+    Order:
+      required:
+      - CompanyID
+      - CompanyName
+      - OrderID
+      - Partner
+      - SubmittedBy
+      - TypeOfOrder
+      type: object
+      properties:
+        Partner:
+          type: string
+          example: sample string 1
+        OrderID:
+          type: string
+          example: sample string 7
+        TypeOfOrder:
+          type: string
+          example: sample string 8
+        SubmittedBy:
+          type: string
+          example: sample string 8
+        CompanyID:
+          type: string
+          example: sample string 8
+        CompanyName:
+          type: string
+          example: sample string 8
+    orders_body:
+      oneOf:
+      - anyOf:
+        - $ref: '#/components/schemas/PartnerB'
+        - $ref: '#/components/schemas/PartnerD'
+        - $ref: '#/components/schemas/PartnerC'
+      - $ref: '#/components/schemas/PartnerA'
+    Website_WebsiteDetails:
+      required:
+      - TemplateId
+      - WebsiteAddressLine1
+      - WebsiteAddressLine2
+      - WebsiteBusinessName
+      - WebsiteCity
+      - WebsiteEmail
+      - WebsiteMobile
+      - WebsitePhone
+      - WebsitePostCode
+      - WebsiteState
+      type: object
+      properties:
+        TemplateId:
+          type: string
+          example: sample string 245
+        WebsiteBusinessName:
+          type: string
+          example: sample string 245
+        WebsiteAddressLine1:
+          type: string
+          example: sample string 246
+        WebsiteAddressLine2:
+          type: string
+          example: sample string 247
+        WebsiteCity:
+          type: string
+          example: sample string 248
+        WebsiteState:
+          type: string
+          example: sample string 249
+        WebsitePostCode:
+          type: string
+          example: sample string 250
+        WebsitePhone:
+          type: string
+          example: sample string 257
+        WebsiteEmail:
+          type: string
+          example: sample string 258
+        WebsiteMobile:
+          type: string
+          example: sample string 259
+    PaidSearch_AdWordCampaign:
+      required:
+      - CampaignAddressLine1
+      - CampaignName
+      - CampaignPostCode
+      - CampaignRadius
+      - DestinationURL
+      - LeadPhoneNumber
+      - Offer
+      - SMSPhoneNumber
+      - UniqueSellingPoint1
+      - UniqueSellingPoint2
+      - UniqueSellingPoint3
+      type: object
+      properties:
+        CampaignName:
+          type: string
+          example: sample string 1
+        CampaignAddressLine1:
+          type: string
+          example: sample string 2
+        CampaignPostCode:
+          type: string
+          example: sample string 6
+        CampaignRadius:
+          type: string
+          example: sample string 13
+        LeadPhoneNumber:
+          type: string
+          example: sample string 14
+        SMSPhoneNumber:
+          type: string
+          example: sample string 15
+        UniqueSellingPoint1:
+          type: string
+          example: sample string 18
+        UniqueSellingPoint2:
+          type: string
+          example: sample string 19
+        UniqueSellingPoint3:
+          type: string
+          example: sample string 20
+        Offer:
+          type: string
+          example: sample string 21
+        DestinationURL:
+          type: string
+          example: sample string 23
